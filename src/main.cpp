@@ -1,3 +1,4 @@
+#include <sstream>
 #include <optional>
 #include <fstream>
 #include <iostream>
@@ -56,11 +57,22 @@ int main(int argc, const char **argv)
     float start_y = 0.0f;
     float end_x = 0.0f;
     float end_y = 0.0f;
+    std::vector<float> v = {};
+    std::string temp;
     std::cout << "Please input start position: x, y: \n";
-    std::cin >> start_x, start_y;
+    std::getline(std::cin, temp);
+    std::istringstream iss(temp);
+    for (float i; iss >> i;){
+        v.push_back(i);
+        if (iss.peek() ==','){
+            iss.ignore();
+        }
+    }
+    start_x = v[0]
+    start_y = v[1]
 
     std::cout << "Please input end position: x, y: \n";
-    std::cin >> end_x, end_y;
+    std::cin >> end_x >> end_y;
     std::cout << "Calculating path between: " << start_x << "," << start_y << " and " << end_x << "," << end_y << "\n";
 
     // Build Model.
