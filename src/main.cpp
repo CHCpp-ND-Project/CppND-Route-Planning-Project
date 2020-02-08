@@ -52,7 +52,11 @@ int main(int argc, const char **argv)
         else
             osm_data = std::move(*data);
     }
-
+    // in order to have clear input I decided to take in x and y input together.
+    // This required robust input handling of spaces and commas which resulted 
+    // in converting to a string stream and removing commas and spaces.
+    // Could eliminate need for vector if reordered while loop and removed for loop
+    // run while loop to delete white space.
     float start_x = 0.0f;
     float start_y = 0.0f;
     float end_x = 0.0f;
@@ -64,7 +68,7 @@ int main(int argc, const char **argv)
     std::istringstream iss(temp);
     for (float i; iss >> std::skipws >> i;){
         v.push_back(i);
-        if (iss.peek() ==','){
+        while (iss.peek() ==',' || iss.peek() == ' '){
             iss.ignore();
         }
     }
@@ -73,10 +77,11 @@ int main(int argc, const char **argv)
     v = {};
     std::cout << "Please input end position: x, y: \n";
     std::getline(std::cin, temp);
-    std::istringstream iss(temp);
+    iss.clear();
+    iss.str(temp);
     for (float i; iss >> std::skipws >> i;){
         v.push_back(i);
-        if (iss.peek() ==','){
+        while (iss.peek() ==',' || iss.peek() == ' '){
             iss.ignore();
         }
     }
