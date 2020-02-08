@@ -62,17 +62,27 @@ int main(int argc, const char **argv)
     std::cout << "Please input start position: x, y: \n";
     std::getline(std::cin, temp);
     std::istringstream iss(temp);
-    for (float i; iss >> i;){
+    for (float i; iss >> std::skipws >> i;){
         v.push_back(i);
         if (iss.peek() ==','){
             iss.ignore();
         }
     }
-    start_x = v[0]
-    start_y = v[1]
-
+    start_x = v[0];
+    start_y = v[1];
+    v = {};
     std::cout << "Please input end position: x, y: \n";
-    std::cin >> end_x >> end_y;
+    std::getline(std::cin, temp);
+    std::istringstream iss(temp);
+    for (float i; iss >> std::skipws >> i;){
+        v.push_back(i);
+        if (iss.peek() ==','){
+            iss.ignore();
+        }
+    }
+    end_x = v[0];
+    end_y = v[1];
+
     std::cout << "Calculating path between: " << start_x << "," << start_y << " and " << end_x << "," << end_y << "\n";
 
     // Build Model.
