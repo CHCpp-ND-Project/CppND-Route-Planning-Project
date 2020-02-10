@@ -9,21 +9,16 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
     end_x *= 0.01;
     end_y *= 0.01;
 
-    // 2: Use the m_Model.FindClosestNode method to find the closest nodes to the starting and ending coordinates.
-    // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
-    // start_node and end_node instantiated as pointer in route_planner.h, pass memory addresses back
+    // start_node and end_node instantiated as pointer in route_planner.h, pass memory addresses back for storing memory address
     start_node = &m_Model.FindClosestNode(start_x, start_y);         
     end_node = &m_Model.FindClosestNode(end_x, end_y);
 }
 
-
-// 3: Implement the CalculateHValue method.
-// Tips:
-// - You can use the distance to the end_node for the h value.
-// - Node objects have a distance method to determine the distance to another node.
-
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
-    // Pass end_node to dereference pointer by using '->' to access method via pointer
+    // dereference node(memory address) and access method .distance by using '->'
+    // Pass dereferenced end_node as 'other' to distance function.
+    // node and end_node are mem addresses, distance accepts nodes as arguments
+    // return distance from (dereferenced memory address of node) to (dereferenced memory address of end_node)
     return node->RouteModel::Node::distance(*end_node); 
 }
 
