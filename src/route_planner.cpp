@@ -31,7 +31,18 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 // - For each node in current_node.neighbors, add the neighbor to open_list and set the node's visited attribute to true.
 
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
-
+    // takes in memory address of current node, need to dereference and call FindNeighbors using ->
+    current_node->RouteModel::Node::FindNeighbors();  // populates neighbors vector of node pointers
+    
+    // need access to current_node.neighbors vector to iterate through neighbors vector:     - std::vector<Node *> neighbors
+    for(RouteModel::Node *node :current_node->neighbors) {
+        // node.visited is checked when populating neighbours list, no need to recheck
+        node.parent = current_node;                         // set the parent to 'current_node': Node * parent = nullptr;
+        node.h_value = RoutePlanner::CalculateHValue(node); // the h_value by calling CalculateHValue and...
+        node.g_value = current_node.g_value + 1;            // the g_value  by incrementing current_nodes'g
+        node.visited = True;                                // set visited attribute to true
+        open_list.emplace_back(node);                       // add each node to the open list and...;
+    }
 }
 
 
