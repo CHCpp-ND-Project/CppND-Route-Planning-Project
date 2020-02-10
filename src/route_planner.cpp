@@ -37,10 +37,10 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     // need access to current_node.neighbors vector to iterate through neighbors vector:     - std::vector<Node *> neighbors
     for(RouteModel::Node *node :current_node->neighbors) {
         // node.visited is checked when populating neighbours list, no need to recheck
-        node.parent = current_node;                         // set the parent to 'current_node': Node * parent = nullptr;
-        node.h_value = RoutePlanner::CalculateHValue(node); // the h_value by calling CalculateHValue and...
-        node.g_value = current_node.g_value + current_node->RouteModel::Node::distance(*node); // the g_value  by incrementing current_nodes' g plus the step
-        node.visited = True;                                // set visited attribute to true
+        node->parent = current_node;                         // set the parent to 'current_node': Node * parent = nullptr;
+        node->h_value = RoutePlanner::CalculateHValue(node); // the h_value by calling CalculateHValue and...
+        node->g_value = current_node->g_value + current_node->RouteModel::Node::distance(*node); // the g_value  by incrementing current_nodes' g plus the step
+        node->visited = true;                                // set visited attribute to true
         open_list.emplace_back(node);                       // add each node to the open list and...;
     }
 }
@@ -52,7 +52,7 @@ RouteModel::Node *RoutePlanner::NextNode() {
     // Sort the open_list according to the sum of the h_value and g_value.
     // Reviewed example from https://www.tutorialspoint.com/Sorting-a-vector-of-custom-objects-using-Cplusplus-STL
     // Using lambda expressions in C++11
-    sort(open_list.begin(), open_list.end(), [](const Node* lhs, const Node* rhs) {
+    sort(open_list.begin(), open_list.end(), [](const RouteModel::Node* lhs, const RouteModel::Node* rhs) {
           return (lhs->g_value + lhs->h_value) < (rhs->g_value + rhs->h_value);
     });
     RouteModel::Node *nextNode = open_list.front();         // Create a pointer to the node in the list with the lowest sum.
