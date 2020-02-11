@@ -68,8 +68,8 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
         RouteModel::Node currentParent = *current_node->parent;
         distance += current_node->RouteModel::Node::distance(currentParent); // distance += calculate distance
         path_found.push_back(currentParent);
-        current = currentParent;
-    } while (current != start_node);                        // while the start_node is not found
+        current_node = *currentParent;
+    } while (current_node != start_node);                        // while the start_node is not found
     std::reverse(path_found.begin(),path_found.end());
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
@@ -85,8 +85,8 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = start_node;  //
     do{ 
-        AddNeighbors(current_node);                 // Add valid open neighbors to open_list using AddNeighbors method
-        current_node = RoutePlanner::NextNode();    // sort open_list and return most likely best next node
+        AddNeighbors(*current_node);                // Add valid open neighbors to open_list using AddNeighbors method by dereferencing current node and passing
+        current_node = RoutePlanner::NextNode();    // sort open_list and return reference to most likely best next node
     } while (current_node != end_node && !open_list.empty());
     if (current_node != end_node) {
         std::cout<< "no viable path found";
