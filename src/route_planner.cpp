@@ -9,20 +9,17 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
     end_x *= 0.01;
     end_y *= 0.01;
 
-    // TODO 2: Use the m_Model.FindClosestNode method to find the closest nodes to the starting and ending coordinates.
-    // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
-    RouteModel::Node start_node = m_Model.FindClosestNode(start_x, start_y);
-    RouteModel::Node end_node = m_Model.FindClosestNode(end_x, end_y);
+    // start_node and end_node instantiated as pointer in route_planner.h, pass memory addresses back for storing memory address
+    start_node = &m_Model.FindClosestNode(start_x, start_y);         
+    end_node = &m_Model.FindClosestNode(end_x, end_y);
 }
 
-
-// TODO 3: Implement the CalculateHValue method.
-// Tips:
-// - You can use the distance to the end_node for the h value.
-// - Node objects have a distance method to determine the distance to another node.
-
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
-    return node->RouteModel::Node::distance(*end_node);
+    // dereference node(memory address) and access method .distance by using '->'
+    // Pass dereferenced end_node as 'other' to distance function.
+    // node and end_node are mem addresses, distance accepts nodes as arguments
+    // return distance from (dereferenced memory address of node) to (dereferenced memory address of end_node)
+    return node->RouteModel::Node::distance(*end_node); 
 }
 
 
@@ -34,19 +31,33 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 // - For each node in current_node.neighbors, add the neighbor to open_list and set the node's visited attribute to true.
 
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
-
+    // takes in memory address of current node, need to dereference and call FindNeighbors using ->
+    current_node->RouteModel::Node::FindNeighbors();  // populates neighbors vector of node pointers
+    
+    // need access to current_node.neighbors vector to iterate through neighbors vector:     - std::vector<Node *> neighbors
+    for(RouteModel::Node *node :current_node->neighbors) {
+        // node.visited is checked when populating neighbours list, no need to recheck
+        node->parent = current_node;                         // set the parent to 'current_node': Node * parent = nullptr;
+        node->h_value = RoutePlanner::CalculateHValue(node); // the h_value by calling CalculateHValue and...
+        node->g_value = current_node->g_value + current_node->RouteModel::Node::distance(*node); // the g_value  by incrementing current_nodes' g plus the step
+        node->visited = true;                                // set visited attribute to true
+        open_list.emplace_back(node);                       // add each node to the open list and...;
+    }
 }
 
 
 // TODO 5: Complete the NextNode method to sort the open list and return the next node.
-// Tips:
-// - Sort the open_list according to the sum of the h value and g value.
-// - Create a pointer to the node in the list with the lowest sum.
-// - Remove that node from the open_list.
-// - Return the pointer.
-
 RouteModel::Node *RoutePlanner::NextNode() {
-
+    // this method returns the next node to be checked in A*
+    // Sort the open_list according to the sum of the h_value and g_value.
+    // Reviewed example from https://www.tutorialspoint.com/Sorting-a-vector-of-custom-objects-using-Cplusplus-STL
+    // Using lambda expressions in C++11
+    sort(open_list.begin(), open_list.end(), [](const RouteModel::Node* lhs, const RouteModel::Node* rhs) {
+          return (lhs->g_value + lhs->h_value) < (rhs->g_value + rhs->h_value);
+    });
+    RouteModel::Node *nextNode = open_list.front();         // Create a pointer to the node in the list with the lowest sum.
+    open_list.erase(open_list.begin());                     // Remove that node from the open_list.
+    return nextNode;                                        // Return the pointer.
 }
 
 
