@@ -61,7 +61,8 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     // Create path_found vector of nodes (dereferenced), in 1st to last order
     distance = 0.0f;
     // initialize path_found to have the end_node as an element.  Only call when end_node reached
-    std::vector<RouteModel::Node> path_found = {*current_node};
+    std::vector<RouteModel::Node> path_found;
+    path_found.push_back(*current_node);
     
     do
     {
