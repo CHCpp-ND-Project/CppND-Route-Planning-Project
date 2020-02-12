@@ -61,15 +61,15 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     // Create path_found vector of nodes (dereferenced), in 1st to last order
     distance = 0.0f;
     // initialize path_found to have the end_node as an element.  Only call when end_node reached
-    std::vector<RouteModel::Node> path_found = *current_node;
+    std::vector<RouteModel::Node> path_found = {*current_node};
     
     do
     {
-        RouteModel::Node currentParent = *current_node->parent;
+        RouteModel::Node currentParent = *(current_node->parent);
         distance += current_node->RouteModel::Node::distance(currentParent); // distance += calculate distance
         path_found.push_back(currentParent);
-        current_node = *currentParent;
-    } while (current_node != start_node);                        // while the start_node is not found
+        current_node = &currentParent;
+    } while (current_node->x != start_node->x && current_node->y != start_node->y); // while the start_node is not found
     std::reverse(path_found.begin(),path_found.end());
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
@@ -85,11 +85,11 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 void RoutePlanner::AStarSearch() {
     RouteModel::Node *current_node = start_node;  //
     do{ 
-        AddNeighbors(*current_node);                // Add valid open neighbors to open_list using AddNeighbors method by dereferencing current node and passing
+        RoutePlanner::AddNeighbors(current_node);                // Add valid open neighbors to open_list using AddNeighbors method by dereferencing current node and passing
         current_node = RoutePlanner::NextNode();    // sort open_list and return reference to most likely best next node
     } while (current_node != end_node && !open_list.empty());
     if (current_node != end_node) {
-        std::cout<< "no viable path found";
+        std::cout<< "no viable path found\n";
     }
     m_Model.path = RoutePlanner::ConstructFinalPath(end_node);
 }
