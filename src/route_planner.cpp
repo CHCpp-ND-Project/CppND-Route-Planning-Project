@@ -84,7 +84,7 @@ void RoutePlanner::AStarSearch() {
     do{ 
         current_node = RoutePlanner::NextNode();    // sort open_list and return reference to most likely best next node
         RoutePlanner::AddNeighbors(current_node);                // Add valid open neighbors to open_list using AddNeighbors method by dereferencing current node and passing
-    } while (current_node->distance(*end_node) !=0);//current_node->x != end_node->x && current_node->y != end_node->y);// || !open_list.empty());
+    } while (current_node->x != end_node->x && current_node->y != end_node->y);// || !open_list.empty());
     /*if (current_node->x != end_node->x && current_node->y != end_node->y) {
         std::cout<< "no viable path found\n";
     }*/
