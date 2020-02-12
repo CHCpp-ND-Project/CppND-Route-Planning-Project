@@ -76,12 +76,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 
 }
 
-
-// TODO 7: Write the A* Search algorithm here.
-// Tips:
-// - When the search has reached the end_node, use the ConstructFinalPath method to return the final path that was found.
-// - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
-
+// Write the A* Search algorithm here.
 void RoutePlanner::AStarSearch() {
     start_node->visited = true;
     open_list.push_back(start_node);
