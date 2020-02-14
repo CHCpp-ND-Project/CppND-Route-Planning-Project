@@ -36,7 +36,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
         node->h_value = RoutePlanner::CalculateHValue(node); // the h_value by calling CalculateHValue and...
         node->g_value = current_node->g_value + current_node->RouteModel::Node::distance(*node); // the g_value  by incrementing current_nodes' g plus the step
         node->visited = true;                                // set visited attribute to true
-        open_list.emplace_back(node);                       // add each node to the open list and...;
+        open_list.emplace_back(node);                        // add each node to the open list and...;
     }
 }
 
@@ -48,10 +48,10 @@ RouteModel::Node *RoutePlanner::NextNode() {
     // Reviewed example from https://www.tutorialspoint.com/Sorting-a-vector-of-custom-objects-using-Cplusplus-STL
     // Using lambda expressions in C++11
     sort(open_list.begin(), open_list.end(), [](const RouteModel::Node* lhs, const RouteModel::Node* rhs) {
-          return (lhs->g_value + lhs->h_value) < (rhs->g_value + rhs->h_value);
+          return (lhs->g_value + lhs->h_value) > (rhs->g_value + rhs->h_value);
     });
-    RouteModel::Node *nextNode = open_list.front();         // Create a pointer to the node in the list with the lowest sum.
-    open_list.erase(open_list.begin());                     // Remove that node from the open_list.
+    RouteModel::Node *nextNode = open_list.back();          // Create a pointer to the node in the list with the lowest sum (sorted to end of list)
+    open_list.pop_back();                                   // Remove that node from the open_list using pop_back faster
     return nextNode;                                        // Return the pointer.
 }
 
@@ -63,18 +63,17 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     // initialize path_found to have the end_node as an element.  Only call when end_node reached
     std::vector<RouteModel::Node> path_found;
     path_found.push_back(*current_node);
-    
+
     do
     {
-        RouteModel::Node currentParent = *(current_node->parent);
-        distance += current_node->RouteModel::Node::distance(currentParent); // distance += calculate distance
-        path_found.push_back(currentParent);
-        current_node = &currentParent;
+        RouteModel::Node *currentParent = (current_node->parent);                   // Create pointer to current node's parent    
+        distance += current_node->RouteModel::Node::distance(*currentParent);       // distance += calculate distance
+        path_found.push_back(*currentParent);                                       // push the node (dereferenced address)
+        current_node = currentParent;                                               // pass memory address back as new current_node
     } while (current_node->x != start_node->x && current_node->y != start_node->y); // while the start_node is not found
-    std::reverse(path_found.begin(),path_found.end());
-    distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
+    std::reverse(path_found.begin(),path_found.end());                              // output 
+    distance *= m_Model.MetricScale();                                              // Multiply the distance by the scale of the map to get meters.
     return path_found;
-
 }
 
 // Write the A* Search algorithm here.
