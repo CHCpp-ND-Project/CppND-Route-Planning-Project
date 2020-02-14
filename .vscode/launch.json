@@ -22,7 +22,7 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ],
+            ]
             //"preLaunchTask": "g++ build active file",
             
         }
